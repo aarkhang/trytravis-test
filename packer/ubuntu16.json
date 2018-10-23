@@ -1,0 +1,42 @@
+{
+    "variables": {
+        "project_id": null,
+		"source_image_family": null,
+        "zone": "europe-north1-a",
+        "machine_type": "f1-micro",
+        "disk_type": "pd-standard",
+        "disk_size": "10",
+		"ssh_username": "appuser",
+        "tags": "",
+        "mongo_ver": "3.4"
+    },
+	"builders": [
+		{
+		"type": "googlecompute",
+		"project_id": "{{ user `project_id` }}",
+		"image_name": "reddit-base-{{timestamp}}",
+        "image_family": "reddit-base",
+        "image_description" : "{{user `source_image_family`}} image with ruby and MongoDB {{user `mongo_ver`}} installed", 
+        "source_image_family": "{{ user `source_image_family` }}",
+        "network": "default",
+		"zone": "{{ user `zone` }}",
+        "tags": "{{ user `tags` }}",
+		"ssh_username": "{{ user `ssh_username` }}",
+        "machine_type": "{{ user `machine_type` }}",
+        "disk_type": "{{ user `disk_type` }}",
+        "disk_size": "{{ user `disk_size` }}"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "script": "scripts/install_ruby.sh",
+            "execute_command": "sudo {{.Path}}"
+        },
+        {
+            "type": "shell",
+            "script": "scripts/install_mongodb.sh",
+            "execute_command": "sudo {{.Path}} {{user `mongo_ver`}}"
+        }
+    ]
+}

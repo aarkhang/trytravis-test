@@ -1,1 +1,3 @@
 __pycache__
+packer/variables*.json
+packer/upload
