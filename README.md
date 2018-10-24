@@ -1,6 +1,60 @@
 aarkhang_infra
 ==============
+[![Build Status](https://travis-ci.com/Otus-DevOps-2018-09/aarkhang_infra.svg?branch=master)](https://travis-ci.com/Otus-DevOps-2018-09/aarkhang_infra)
+
 Otus DevOps 2018-09 Infrastructure repository.
+
+Домашнее задание #5    Packer base
+----------------------
+
+### Шаблоны
+
+Созданы и параметризованы шаблоны для сборки **Packer**-ом образов ВМ
+
+* ubuntu16.json: cемейство reddit-base (базовая установка Ruby и МоngoDB) 
+
+* immutable.json: cемейство reddit-full (строится на основе базового) 
+
+
+### Сборка
+
+
+Для сборки base-образа применяется команда
+```sh
+$ packer build -var-file=variables.json  ubuntu16.json
+```
+
+Для автоматизации сборки full-образа создан скрипт build-reddit-full.sh
+```sh
+#!/bin/sh
+set -e
+
+IMAGE=`gcloud compute images list --format="value(name)"  --filter="name:reddit-base"  --sort-by="~name" --limit=1`
+
+echo Using last base image: $IMAGE
+
+packer validate -var-file=variables-immutable.json -var "source_image=$IMAGE" immutable.json
+packer build -var-file=variables-immutable.json -var "source_image=$IMAGE" immutable.json
+```
+
+### Запуск
+
+
+Для автоматизации запуска образа ВМ создан скрипт create-reddit-vm.sh
+```sh
+#!/bin/sh
+
+IMAGE=`gcloud compute images list --format="value(name)"  --filter="name:reddit-full"  --sort-by="~name" --limit=1`
+
+echo Using last image: $IMAGE
+
+gcloud compute instances create reddit-app \
+  --image $IMAGE \
+  --machine-type=g1-small \
+  --tags "puma-server" \
+  --zone "europe-west1-b"
+```
+
 
 Домашнее задание #4
 ----------------------
