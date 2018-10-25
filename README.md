@@ -2,6 +2,37 @@ aarkhang_infra
 ==============
 Otus DevOps 2018-09 Infrastructure repository.
 
+Домашнее задание #4
+----------------------
+
+### Данные для подключения
+```
+testapp_IP = 35.228.70.71
+testapp_port = 9292
+```
+
+#### Команда создания инстанса
+```sh
+$ gcloud compute instances create reddit-app \
+  --boot-disk-size=10GB \
+  --image-family ubuntu-1604-lts \
+  --image-project=ubuntu-os-cloud \
+  --machine-type=g1-small \
+  --tags puma-server \
+  --restart-on-failure \
+  --metadata-from-file startup-script=install_reddit.sh
+```
+
+#### Команда создания правила брандмауэра
+```sh
+$ gcloud compute --project=infra-219311 firewall-rules \
+     create  default-puma-server \
+   --direction=INGRESS --priority=1000 --network=default \
+   --action=ALLOW --rules=tcp:9292 --source-ranges=0.0.0.0/0 \
+   --target-tags=puma-server
+```
+
+
 Домашнее задание #3
 ----------------------
 
