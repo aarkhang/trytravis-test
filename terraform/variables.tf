@@ -20,6 +20,14 @@ variable private_key_path {
   description = "Path to the private key used for ssh access"
 }
 
+variable public_key2_path {
+  description = "Path to the second public key used for ssh access"
+}
+
+variable private_key2_path {
+  description = "Path to the second private key used for ssh access"
+}
+
 variable disk_image {
   description = "Disk image"
 }
