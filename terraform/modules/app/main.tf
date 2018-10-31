@@ -71,6 +71,6 @@ data "template_file" "puma_service" {
   template = "${file("files/puma.service")}"
 
   vars {
-    db_address = "${google_compute_address.db_ip.address}"
+    db_address = "${var.db_address}"
   }
 }
