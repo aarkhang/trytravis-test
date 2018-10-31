@@ -5,7 +5,7 @@ provider "google" {
 }
 
 module "db" {
-  source           = "modules/db"
+  source           = "../modules/db"
   zone             = "${var.zone}"
   machine_type     = "${var.machine_type}"
   db_disk_image    = "${var.db_disk_image}"
@@ -14,7 +14,7 @@ module "db" {
 }
 
 module "app" {
-  source           = "modules/app"
+  source           = "../modules/app"
   zone             = "${var.zone}"
   machine_type     = "${var.machine_type}"
   app_disk_image   = "${var.app_disk_image}"
@@ -24,6 +24,6 @@ module "app" {
 }
 
 module "vpc" {
-  source        = "modules/vpc"
+  source        = "../modules/vpc"
   source_ranges = ["0.0.0.0/0"]
 }

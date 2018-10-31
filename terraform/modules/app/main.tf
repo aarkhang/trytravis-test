@@ -40,7 +40,7 @@ resource "google_compute_instance" "app" {
   }
 
   provisioner "remote-exec" {
-    script = "files/deploy.sh"
+    script = "${path.module}/files/deploy.sh"
   }
 }
 
@@ -68,7 +68,7 @@ resource "google_compute_address" "app_ip" {
 }
 
 data "template_file" "puma_service" {
-  template = "${file("files/puma.service")}"
+  template = "${file("${path.module}/files/puma.service")}"
 
   vars {
     db_address = "${var.db_address}"
