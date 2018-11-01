@@ -5,7 +5,11 @@ provider "google" {
 }
 
 module "db" {
-  source           = "../modules/db"
+  source        = "../modules/db"
+  instance_name = "reddit-db-stage"
+  fw_mongo_name = "allow-mongo-stage"
+  db_ip_name    = "mongo-ip-stage"
+
   zone             = "${var.zone}"
   machine_type     = "${var.machine_type}"
   db_disk_image    = "${var.db_disk_image}"
@@ -15,6 +19,9 @@ module "db" {
 
 module "app" {
   source           = "../modules/app"
+  instance_name    = "reddit-app-stage"
+  fw_puma_name     = "allow-puma-stage"
+  app_ip_name      = "reddit-ip-stage"
   zone             = "${var.zone}"
   machine_type     = "${var.machine_type}"
   app_disk_image   = "${var.app_disk_image}"
@@ -25,5 +32,6 @@ module "app" {
 
 module "vpc" {
   source        = "../modules/vpc"
+  firewall_name = "allow-ssh-stage"
   source_ranges = ["0.0.0.0/0"]
 }

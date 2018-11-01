@@ -1,3 +1,7 @@
+variable instance_name {
+  description = "Instance name"
+}
+
 variable zone {
   description = "Zone"
 }
@@ -20,4 +24,12 @@ variable private_key_path {
 
 variable db_address {
   description = "IP address of mongodb server"
+}
+
+variable fw_puma_name {
+  description = "Name of firewall rule"
+}
+
+variable app_ip_name {
+  description = "Name of app address resource"
 }

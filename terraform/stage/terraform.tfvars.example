@@ -1,4 +1,5 @@
-project = "infra-000001"
+project = "your-project-here"
+region  = "europe-west1"
 zone  = "europe-west1-b"
 machine_type="f1-micro"
 public_key_path = "~/.ssh/appuser.pub"

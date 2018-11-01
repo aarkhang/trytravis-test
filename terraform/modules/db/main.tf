@@ -1,5 +1,5 @@
 resource "google_compute_instance" "db" {
-  name         = "reddit-db"
+  name         = "${var.instance_name}"
   machine_type = "${var.machine_type}"
   zone         = "${var.zone}"
 
@@ -33,7 +33,7 @@ resource "google_compute_instance" "db" {
 }
 
 resource "google_compute_firewall" "firewall_mongo" {
-  name        = "allow-mongo-default"
+  name        = "${var.fw_mongo_name}"
   description = "Allow MongoDB access from instances with given tag"
   network     = "default"
 
@@ -50,6 +50,6 @@ resource "google_compute_firewall" "firewall_mongo" {
 }
 
 resource "google_compute_address" "db_ip" {
-  name         = "mongo-db-ip"
+  name         = "${var.db_ip_name}"
   address_type = "INTERNAL"
 }
