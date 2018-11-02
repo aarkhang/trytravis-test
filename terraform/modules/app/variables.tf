@@ -1,5 +1,5 @@
-variable instance_name {
-  description = "Instance name"
+variable name_suffix {
+  description = "Suffix for resource names"
 }
 
 variable zone {
@@ -24,12 +24,4 @@ variable private_key_path {
 
 variable db_address {
   description = "IP address of mongodb server"
-}
-
-variable fw_puma_name {
-  description = "Name of firewall rule"
-}
-
-variable app_ip_name {
-  description = "Name of app address resource"
 }

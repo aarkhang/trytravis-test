@@ -1,5 +1,5 @@
-variable firewall_name {
-  description = "Name of firewall rule"
+variable name_suffix {
+  description = "Suffix for resource names"
 }
 
 variable source_ranges {

@@ -1,5 +1,5 @@
 resource "google_compute_firewall" "firewall_ssh" {
-  name        = "${var.firewall_name}"
+  name        = "allow-ssh${var.name_suffix}"
   description = "Allow SSH from somewhere"
   network     = "default"
 

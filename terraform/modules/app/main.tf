@@ -1,5 +1,5 @@
 resource "google_compute_instance" "app" {
-  name         = "${var.instance_name}"
+  name         = "reddit-app${var.name_suffix}"
   machine_type = "${var.machine_type}"
   zone         = "${var.zone}"
 
@@ -45,7 +45,7 @@ resource "google_compute_instance" "app" {
 }
 
 resource "google_compute_firewall" "firewall_puma" {
-  name = "${var.fw_puma_name}"
+  name = "allow-puma${var.name_suffix}"
 
   # Название сети , в которой действует правило
   network = "default"
@@ -64,7 +64,7 @@ resource "google_compute_firewall" "firewall_puma" {
 }
 
 resource "google_compute_address" "app_ip" {
-  name = "${var.app_ip_name}"
+  name = "reddit-ip${var.name_suffix}"
 }
 
 data "template_file" "puma_service" {

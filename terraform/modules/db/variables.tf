@@ -1,5 +1,5 @@
-variable instance_name {
-  description = "Instance name"
+variable name_suffix {
+  description = "Suffix for resource names"
 }
 
 variable zone {
@@ -20,12 +20,4 @@ variable public_key_path {
 
 variable private_key_path {
   description = "Path to the private key used for ssh access"
-}
-
-variable fw_mongo_name {
-  description = "Name of firewall rule"
-}
-
-variable db_ip_name {
-  description = "Name of db address resource"
 }

@@ -4,6 +4,91 @@ aarkhang_infra
 
 Otus DevOps 2018-09 Infrastructure repository.
 
+Домашнее задание #7    Terraform-2
+----------------------------------
+1. В конфигурации Terraform cоздано правило файрвола для SSH. 
+2. Добавлен ресурс статического внешнего IP-адреса для приложения 
+3. Подготовлены два образа ВМ в GCE с предустановленными Ruby и MongoDB. 
+   - Созданы Packer-шаблоны app.json и db.json на основе ubuntu16.json
+   - Доработан скрипт install_mongodb.sh для замены bindIP в конфигурационном файле mongod.conf на "0.0.0.0"
+   - Построены образы reddit-app-base-1540806487 и reddit-db-base-1540892043
+4. Создана конфигурация Terraform для запуска приложения reddit и сервера БД в отдельных экземплярах ВМ
+   - Основной конфигурационный файл Terraform разделён на 4 части: app.tf, db.tf, vpc.tf и main.tf
+   - Добавлен ресурс статического внутреннего IP-адреса в db.tf
+   - Изменен файл app.json для корректной работы провижинера
+	    * добавлена input-переменная db_address для получения IP-адреса сервера БД 
+	    * добавлен [источник данных](https://www.terraform.io/docs/configuration/data-sources.html) [*template_file*](https://www.terraform.io/docs/providers/template/d/file.html) для формирования systemd-юнита puma.service со строкой, передающей IP-адрес БД в переменную окружения DATABASE_URL
+  	  * скорректирован провижинер для записи файла puma.service на сервер
+   - Проверен запуск этих ВМ и корректная работа приложения
+5. Конфигурации Terraform для ВМ и настройки сети перемещены в модули
+6. Создана инфраструктура для двух окружений stage и prod с использоанием модулей
+7. С помощью параметризации модулей инфраструктуры окружений сделаны независимыми друг от друга (возможен параллельный запуск двух окружений)
+8. Создан бакет для хранения состояния инфраструктуры в сервисе GCS
+9. Настроено хранение состояния инфраструктуры в удалённом бекенде
+10. Проверено создание блокировок при одновременном применении конфигурации
+
+### Как запустить проект
+- Клонировать репозиторий
+- В директории packer скопировать файл variables.json.example в variables.json и заменить в нем project_id на реальный ID вашего проекта 
+- Построить образы ВМ из шаблонов
+```sh
+ packer build --var-file variables.json app.json
+ packer build --var-file variables.json db.json
+```
+- В директории terraform скопировать файл terraform.tfvars.example в terraform.tfvars и вписать в него реальный ID вашего проекта 
+- Создать бакет в Google Cloud Storage
+```sh
+ terraform init
+ terraform apply
+```
+- В директории terraform/stage скопировать файл terraform.tfvars.example в terraform.tfvars и вписать в него реальный ID вашего проекта 
+- Запустить инстансы в Google Cloud Engine
+```sh
+ terraform init
+ terraform apply
+```
+- То же самое проделать в директории terraform/prod (можно не ждать окончания процесса в stage)
+В файлах terraform.tfvars.example для stage и prod указаны разные region и zone, если их установить одинаковыми в terraform.tfvars, то второй процесс развёртывания завершится с ошибкой:
+```
+* module.app.google_compute_address.app_ip: 1 error(s) occurred:
+* google_compute_address.app_ip: Error creating address: googleapi: Error 403: Quota 'STATIC_ADDRESSES' exceeded. Limit: 1.0 in region europe-west1., quotaExceeded
+```
+В разных регионах удаётся развернуть параллельно оба окружения
+
+### Как проверить работу приложения
+По завешении процесса развёртывания на экран будет выведено сообщение вида
+```
+Apply complete! Resources: 7 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+app_external_ip = 35.228.177.152
+db_internal_ip = 10.166.0.2
+```
+Перейти по ссылке http://<app_external_ip>:9292
+
+### Как проверить работу блокировок
+Запустить 2 процесса  *terraform apply* в одном и том же окружении параллельно. Один из процессов должен завершиться с ошибкой
+```
+Acquiring state lock. This may take a few moments...
+
+Error: Error locking state: Error acquiring the state lock: writing "gs://infra-219311-tfstate/stage/default.tflock" failed: googleapi: Error 412: Precondition Failed, conditionNotMet
+Lock Info:
+  ID:        1541082383241326
+  Path:      gs://infra-219311-tfstate/stage/default.tflock
+  Operation: OperationTypeApply
+  Who:       Arhcomp\arh@Arhcomp
+  Version:   0.11.10
+  Created:   2018-11-01 14:24:02.0452 +0000 UTC
+  Info:      
+
+
+Terraform acquires a state lock to protect the state from being written
+by multiple users at the same time. Please resolve the issue above and try
+again. For most commands, you can disable locking with the "-lock=false"
+flag, but this is not recommended.
+```
+
 Домашнее задание #6    Terraform-1
 ----------------------------------
 

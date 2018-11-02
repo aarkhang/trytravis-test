@@ -6,9 +6,7 @@ provider "google" {
 
 module "db" {
   source           = "../modules/db"
-  instance_name    = "reddit-db-prod"
-  fw_mongo_name    = "allow-mongo-prod"
-  db_ip_name       = "mongo-ip-prod"
+  name_suffix      = "${var.name_suffix}"
   zone             = "${var.zone}"
   machine_type     = "${var.machine_type}"
   db_disk_image    = "${var.db_disk_image}"
@@ -18,9 +16,7 @@ module "db" {
 
 module "app" {
   source           = "../modules/app"
-  instance_name    = "reddit-app-prod"
-  fw_puma_name     = "allow-puma-prod"
-  app_ip_name      = "reddit-ip-prod"
+  name_suffix      = "${var.name_suffix}"
   zone             = "${var.zone}"
   machine_type     = "${var.machine_type}"
   app_disk_image   = "${var.app_disk_image}"
@@ -31,6 +27,6 @@ module "app" {
 
 module "vpc" {
   source        = "../modules/vpc"
-  firewall_name = "allow-ssh-prod"
+  name_suffix   = "${var.name_suffix}"
   source_ranges = ["80.252.153.106/32"]
 }

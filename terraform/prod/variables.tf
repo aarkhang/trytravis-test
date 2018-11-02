@@ -34,3 +34,8 @@ variable machine_type {
   description = "Machine type"
   default     = "f1-micro"
 }
+
+variable name_suffix {
+  description = "Suffix for resource names"
+  default     = ""
+}

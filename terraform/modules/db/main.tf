@@ -1,5 +1,5 @@
 resource "google_compute_instance" "db" {
-  name         = "${var.instance_name}"
+  name         = "reddit-db${var.name_suffix}"
   machine_type = "${var.machine_type}"
   zone         = "${var.zone}"
 
@@ -18,8 +18,8 @@ resource "google_compute_instance" "db" {
 
   # определение сетевого интерфейса
   network_interface {
-    network    = "default"
-    network_ip = "${google_compute_address.db_ip.address}"
+    network = "default"
+    address = "${google_compute_address.db_ip.address}"
 
     access_config = {}
   }
@@ -33,7 +33,7 @@ resource "google_compute_instance" "db" {
 }
 
 resource "google_compute_firewall" "firewall_mongo" {
-  name        = "${var.fw_mongo_name}"
+  name        = "allow-mongo${var.name_suffix}"
   description = "Allow MongoDB access from instances with given tag"
   network     = "default"
 
@@ -50,6 +50,6 @@ resource "google_compute_firewall" "firewall_mongo" {
 }
 
 resource "google_compute_address" "db_ip" {
-  name         = "${var.db_ip_name}"
+  name         = "db-ip${var.name_suffix}"
   address_type = "INTERNAL"
 }
