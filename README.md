@@ -75,7 +75,7 @@ reddit-db-stage | FAILED! => {
     "rc": 127
 }
 ```
-Оказывается, в Ubuntu 18.04 python 2.7 по-умочанию не установлен, но есть python3
+Оказывается, в Ubuntu 18.04 python 2.7 по-умолчанию не установлен, но есть python3
 ```
 appuser@instance-2:~$ python --version
 
