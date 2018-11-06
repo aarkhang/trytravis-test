@@ -6,3 +6,4 @@ packer/upload
 *.tfstate.backup
 *.tfvars
 .terraform/
+*.pyc
