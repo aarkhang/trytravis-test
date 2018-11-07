@@ -1,0 +1,52 @@
+{
+    "variables": {
+        "project_id": null,
+		"source_image": null,
+        "zone": "europe-north1-a",
+        "machine_type": "f1-micro",
+		"ssh_username": "appuser",
+        "disk_type": "pd-standard",
+        "disk_size": "10"
+    },
+	"builders": [
+		{
+		"type": "googlecompute",
+		"project_id": "{{ user `project_id` }}",
+		"image_name": "reddit-full-{{timestamp}}",
+        "image_family": "reddit-full",
+        "image_description" : "{{user `source_image`}} with reddit application installed", 
+        "source_image_family": "reddit-base",
+        "source_image": "{{user `source_image`}}",
+		"zone": "{{ user `zone` }}",
+        "machine_type": "{{ user `machine_type` }}",
+		"ssh_username": "{{ user `ssh_username` }}",
+        "disk_type": "{{ user `disk_type` }}",
+        "disk_size": "{{ user `disk_size` }}"
+        }
+    ],
+    "provisioners": [
+        {
+            "inline": [
+                "sed \"s/appuser/{{user `ssh_username`}}/g\" files/reddit.service  > upload/reddit.service"
+            ],
+            "type": "shell-local"
+        },
+        {
+            "source": "./upload/",
+            "destination": "/tmp",
+            "type": "file"
+        },
+        {
+            "inline": [
+              "sudo mv /tmp/reddit.service /etc/systemd/system/",
+              "sudo chmod 664 /etc/systemd/system/reddit.service"
+            ],
+            "type": "shell"
+        },
+        {
+            "type": "shell",
+            "script": "scripts/deploy.sh",
+            "execute_command": "{{.Path}} {{user `ssh_username`}}"
+        }
+    ]
+}

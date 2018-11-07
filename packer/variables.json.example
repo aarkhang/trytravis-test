@@ -1,0 +1,9 @@
+{
+        "project_id": "infra-123456",
+	"source_image_family": "ubuntu-1804-lts",
+        "machine_type": "g1-small",
+        "zone": "europe-west1-b",
+        "disk_size": "20",
+        "tags":  "puma-server",
+        "mongo_ver": "4.0"
+}
