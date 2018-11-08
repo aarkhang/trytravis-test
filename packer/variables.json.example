@@ -1,8 +1,7 @@
 {
         "project_id": "infra-123456",
-	"source_image_family": "ubuntu-1804-lts",
+	"source_image_family": "ubuntu-1604-lts",
         "machine_type": "f1-micro",
         "zone": "europe-west1-b",
-        "disk_size": "10",
-        "mongo_ver": "3.6"
+        "disk_size": "10"
 }
