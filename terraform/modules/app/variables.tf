@@ -25,3 +25,8 @@ variable private_key_path {
 variable db_address {
   description = "IP address of mongodb server"
 }
+
+variable enable_deploy {
+  description = "Boolean flag for enable/disable application deploy"
+  default     = false
+}

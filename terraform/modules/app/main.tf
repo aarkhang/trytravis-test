@@ -26,12 +26,17 @@ resource "google_compute_instance" "app" {
       nat_ip = "${google_compute_address.app_ip.address}"
     }
   }
+}
+
+resource "null_resource" "app_deploy" {
+  count = "${var.enable_deploy ? 1 : 0}"
 
   connection {
     type        = "ssh"
     user        = "appuser"
     agent       = false
     private_key = "${file(var.private_key_path)}"
+    host        = "${google_compute_instance.app.network_interface.0.access_config.0.assigned_nat_ip}"
   }
 
   provisioner "file" {

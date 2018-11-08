@@ -39,3 +39,8 @@ variable name_suffix {
   description = "Suffix for resource names"
   default     = ""
 }
+
+variable enable_deploy {
+  description = "Boolean flag for enable/disable application deploy"
+  default     = false
+}

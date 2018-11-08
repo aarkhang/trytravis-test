@@ -23,6 +23,7 @@ module "app" {
   public_key_path  = "${var.public_key_path}"
   private_key_path = "${var.private_key_path}"
   db_address       = "${module.db.db_internal_ip}"
+  enable_deploy    = "${var.enable_deploy}"
 }
 
 module "vpc" {
