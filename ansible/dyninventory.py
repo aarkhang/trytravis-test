@@ -15,24 +15,25 @@ def make_group(basename):
     """Функция принимает базовое имя, возвращает список найденных инстансов 
     и добавляет их IP-адреса в словарь hostvars"""
     group = []
-    gcil = 'gcloud compute instances list --format="value(name,networkInterfaces[].accessConfigs[0].natIP)" --filter="name:%s"'
+    gcil = 'gcloud compute instances list --format="value(name,networkInterfaces[].accessConfigs[0].natIP,networkInterfaces[0].networkIP)" --filter="name:%s"'
     p = subprocess.Popen( gcil % basename, shell=True, stdout=subprocess.PIPE)
     for line in p.stdout:
-        name, addr = line.split()
-        hostvars[name] = { "ansible_host" : addr}
+        name, addr, intip = line.split()
+        hostvars[name] = { "ansible_host" : addr,
+                           "internal_ip" : intip }
         group.append(name)
     return group    
     
         
 def main(args):
+    """ Создание динамического inventory"""
     if len(args) != 2 or args[1] != "--list":
         sys.stderr.write("Usage: python %s --list\n" % args[0])
         return 1
-    """ Создание динамического inventory"""
     app = make_group("reddit-app")
     db  = make_group("reddit-db")
     appvars = {}
-    dbvars  = { "ansible_python_interpreter": "/usr/bin/python3" }
+    dbvars  = {}
     
     inventory = \
     {   "app":   { "hosts": app, "vars" : appvars },
