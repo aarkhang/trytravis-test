@@ -6,10 +6,6 @@
   vars:
     mongo_bind_ip: 0.0.0.0
   tasks:
-    - name: Check environment variable DB_NODE_NAME
-      fail: msg="Environment variable DB_NODE_NAME must be set to {{ inventory_hostname_short }}"
-      when: inventory_hostname_short  != lookup('env', 'DB_NODE_NAME')
-
     - name: Change mongo config file
       template: 
         src: templates/mongod.conf.j2
