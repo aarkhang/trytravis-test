@@ -1,3 +1,8 @@
 __pycache__
 packer/variables*.json
 packer/upload
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+*.tfvars
+.terraform/

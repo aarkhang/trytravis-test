@@ -4,6 +4,44 @@ aarkhang_infra
 
 Otus DevOps 2018-09 Infrastructure repository.
 
+Домашнее задание #6    Terraform-1
+----------------------------------
+
+### Основное ДЗ
+1. Удалены ключи пользователя appuser из метаданных прокта
+2. Установлена Terraform
+3. Создана конфигурация Terraform для запуска 1 экземпляра ВМ из образа reddit-base в GCP
+   - Публичный ключ пользователя appuser добавлен к метаданным экземпляра
+   - Добавлено правило файрволла и тег для него
+   - Добавлены провижинеры для развёртывания и запуска тестового приложения
+   - Добавлен приватный ключ для подключения провижинера по SSH
+4. Конфигурационный файл параметризован с помощью входных переменных
+5. Отформатированы конфигурационные файлы
+6. Проверена работа приложения
+
+
+### Задание со *
+Добавить ssh-ключи к метаданным проекта можно 2 способами:
+   - С помощью ресурса [google_compute_project_metadata](https://www.terraform.io/docs/providers/google/r/compute_project_metadata.html)
+```
+resource "google_compute_project_metadata" "ssh_keys" {
+  metadata {
+    ssh-keys = "appuser1:${file(var.public_key_path)}appuser2:${file(var.public_key2_path)}"
+  }
+}
+```
+   - С помощью ресурса [google_compute_project_metadata_item](https://www.terraform.io/docs/providers/google/r/compute_project_metadata_item.html)
+```
+resource "google_compute_project_metadata_item" "ssh_keys" {
+  key   = "ssh-keys"
+  value = "appuser1:${file(var.public_key_path)}appuser2:${file(var.public_key2_path)}"
+}
+```
+С помощью **одного** ресурса можно добавить несколько ключей, разделяя их символом "\n", а при использовании синтаксиса ${file(var.public_key_path)} разделитель можно опустить, т.к. он имеется внутри файла с публичным ключом.
+
+Ключи, указанные в конфигурации terraform, перезапишут любые другие ssh-ключи, утановленные вручную и удалят все ключи, не указанные в конфигурации.
+
+
 Домашнее задание #5    Packer base
 ----------------------
 
