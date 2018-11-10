@@ -14,7 +14,7 @@ resource "google_compute_instance" "app" {
     ssh-keys = "appuser:${file(var.public_key_path)}"
   }
 
-  tags = ["reddit-app"]
+  tags = ["tag-app${var.name_suffix}", "${var.env_name}"]
 
   # определение сетевого интерфейса
   network_interface {
@@ -65,7 +65,7 @@ resource "google_compute_firewall" "firewall_puma" {
   source_ranges = ["0.0.0.0/0"]
 
   # Правило применимо для инстансов с перечисленными тэгами
-  target_tags = ["reddit-app"]
+  target_tags = ["tag-app${var.name_suffix}"]
 }
 
 resource "google_compute_address" "app_ip" {

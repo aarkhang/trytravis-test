@@ -8,20 +8,33 @@ import subprocess
 import sys
 import json
 
-# global dictionary with IP-addresses
+# global dictionaries
 hostvars = {}
+envgrp = {}
+grpvars = {}
 
 def make_group(basename):
     """Функция принимает базовое имя, возвращает список найденных инстансов 
     и добавляет их IP-адреса в словарь hostvars"""
     group = []
-    gcil = 'gcloud compute instances list --format="value(name,networkInterfaces[].accessConfigs[0].natIP,networkInterfaces[0].networkIP)" --filter="name:%s"'
-    p = subprocess.Popen( gcil % basename, shell=True, stdout=subprocess.PIPE)
+    gcil = 'gcloud compute instances list --format="value(%s)" --filter="name:%s"'
+    props = (   'name',
+                'networkInterfaces[].accessConfigs[0].natIP',
+                'networkInterfaces[0].networkIP',
+                'tags.items[0]'
+            )
+    p = subprocess.Popen( gcil % (','.join(props), basename), shell=True, stdout=subprocess.PIPE)
     for line in p.stdout:
-        name, addr, intip = line.split()
+        name, addr, intip, env = line.split()
         hostvars[name] = { "ansible_host" : addr,
                            "internal_ip" : intip }
         group.append(name)
+        if env in envgrp:
+            envgrp[env].append(name)
+        else:
+            envgrp[env] = [name]
+        if name.startswith( "reddit-db" ):
+            grpvars[env] = { "dbserver" : name, "db_ip" : intip } 
     return group    
     
         
@@ -40,6 +53,8 @@ def main(args):
         "db":    { "hosts": db,  "vars" : dbvars },
         "_meta": { "hostvars": hostvars }
     }
+    for grp in envgrp:
+        inventory[grp] = { "hosts" : envgrp[grp], "vars" : grpvars[grp] }
  
     json.dump( inventory, sys.stdout, indent=4 )
     return 0

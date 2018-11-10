@@ -14,7 +14,7 @@ resource "google_compute_instance" "db" {
     ssh-keys = "appuser:${file(var.public_key_path)}"
   }
 
-  tags = ["reddit-db"]
+  tags = ["tag-db${var.name_suffix}", "${var.env_name}"]
 
   # определение сетевого интерфейса
   network_interface {
@@ -36,10 +36,10 @@ resource "google_compute_firewall" "firewall_mongo" {
   }
 
   # правило применимо к инстансам с тегом ...
-  target_tags = ["reddit-db"]
+  target_tags = ["tag-db${var.name_suffix}"]
 
   # порт будет доступен только для инстансов с тегом ...
-  source_tags = ["reddit-app"]
+  source_tags = ["tag-app${var.name_suffix}"]
 }
 
 resource "google_compute_address" "db_ip" {
