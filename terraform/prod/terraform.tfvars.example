@@ -1,0 +1,6 @@
+project = "your-project-here"
+region  = "europe-north1"
+zone  = "europe-north1-a"
+machine_type="f1-micro"
+public_key_path = "~/.ssh/appuser.pub"
+private_key_path = "~/.ssh/appuser"
