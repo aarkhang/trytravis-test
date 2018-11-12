@@ -34,7 +34,7 @@ def make_group(basename):
         else:
             envgrp[env] = [name]
         if name.startswith( "reddit-db" ):
-            grpvars[env] = { "dbserver" : name, "db_ip" : intip } 
+            grpvars[env] = { "dbserver" : name } 
     return group    
     
         

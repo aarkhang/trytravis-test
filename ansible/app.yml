@@ -5,13 +5,8 @@
   become: true
   vars:
     db_node: "{{ hostvars[inventory_hostname_short]['dbserver'] }}"
-    db_ip:   "{{ hostvars[inventory_hostname_short]['db_ip'] }}"
     db_host: "{{ hostvars[db_node]['internal_ip'] }}"
   tasks:
-    - debug: var=db_node
-    - debug: var=db_ip
-    - debug: var=db_host
-
     - name: Add unit file for Puma
       copy:
         src: files/puma.service
