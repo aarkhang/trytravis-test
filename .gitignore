@@ -8,3 +8,4 @@ packer/upload
 .terraform/
 *.pyc
 *.retry
+jdauphant.nginx

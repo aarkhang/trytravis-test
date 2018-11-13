@@ -1,2 +1,9 @@
 db_node: "{{ hostvars[inventory_hostname_short]['dbserver'] }}"
 db_host: "{{ hostvars[db_node]['internal_ip'] }}"
+nginx_sites:
+  default:
+    - listen 80
+    - server_name "reddit"
+    - location / {
+        proxy_pass http://127.0.0.1:9292;
+      }

@@ -9,6 +9,6 @@ all:
     db:
       hosts:
         reddit-db-s:
-          ansible_host: 35.204.28.241
+          ansible_host: 35.204.151.49
           internal_ip: 10.164.0.2
     ungrouped: {}
