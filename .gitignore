@@ -1,4 +1,5 @@
 __pycache__
+# Terraform & Packer
 packer/variables*.json
 packer/upload
 *.tfstate
@@ -6,11 +7,17 @@ packer/upload
 *.tfstate.backup
 *.tfvars
 .terraform/
-*.pyc
+# Ansible
 *.retry
 jdauphant.nginx
 vault.key
 venv
+# Molecule
 *.log
+*.pyc
+.molecule
+.cache
+.pytest_cache
 .yamllint
+# Vagrant
 .vagrant
