@@ -4,6 +4,100 @@ aarkhang_infra
 
 Otus DevOps 2018-09 Infrastructure repository.
 
+Домашнее задание #8    Ansible-1
+----------------------------------
+### Что сделано
+1. Установлена Ansible.
+2. Созданы конфигурационный и inventory-файл для инфраструктуры из окружений stage и prod
+3. Проверена работа базовых модулей ping, command, shell, service с отдельными хостами и группами хостов
+4. Создан inventory-файл в формате YAML
+5. Проверена процедура клонирования репозитория с помощью модуля git
+6. Создан плейбук, выполняющий клонирование репозитория
+7. Проверено восстановление репозитория с помощью плейбука после его удаления
+8. Проверено использовние скрипта [ansible-inventory](https://docs.ansible.com/ansible/latest/cli/ansible-inventory.html#ansible-inventory) для преобразования формата inventory-файла из ini в YAML и JSON
+9. Создан скрипт dyninventory.py, использующий вызов *gcloud compute instances list* и реализущий динамическое инвентори для инфраструктуры из окружений stage и prod 
+
+### Как запустить проект
+- Клонировать репозиторий
+- Поднять параллельно инфраструктуры stage и prod, как описано в домашней работе #7
+
+### Как проверить работоспособность
+- Перейти в каталог ansible и выполнить команду
+```sh
+$ ansible -i dyninventory.py all -m ping
+```
+Вывод команды должен выглядеть так
+```
+reddit-app | SUCCESS => {
+    "changed": false, 
+    "ping": "pong"
+}
+reddit-db | SUCCESS => {
+    "changed": false, 
+    "ping": "pong"
+}
+reddit-app-stage | SUCCESS => {
+    "changed": false, 
+    "ping": "pong"
+}
+reddit-db-stage | SUCCESS => {
+    "changed": false, 
+    "ping": "pong"
+}
+```
+### Примечание
+В предыдущих домашних работах я ради эксперимента собрал образы ВМ на основе Ubuntu 18.04. 
+При тестировании приложения возникла ошибка  **NameError at / **, поэтому образ reddit-app-base был пересобран 
+на основе Ubuntu 16.04. Ошибка исчезла и образ reddit-db-base я пересобирать не стал. Теперь при работе с
+Ansible у меня возникла следующая ошибка:
+```
+arh@zalman:/home/my/aarkhang_infra/ansible$ ansible -i inventory all -m ping
+reddit-app | SUCCESS => {
+    "changed": false, 
+    "ping": "pong"
+}
+reddit-app-stage | SUCCESS => {
+    "changed": false, 
+    "ping": "pong"
+}
+reddit-db | FAILED! => {
+    "changed": false, 
+    "module_stderr": "Shared connection to 35.228.241.58 closed.\r\n", 
+    "module_stdout": "/bin/sh: 1: /usr/bin/python: not found\r\n", 
+    "msg": "MODULE FAILURE\nSee stdout/stderr for the exact error", 
+    "rc": 127
+}
+reddit-db-stage | FAILED! => {
+    "changed": false, 
+    "module_stderr": "Shared connection to 35.195.151.178 closed.\r\n", 
+    "module_stdout": "/bin/sh: 1: /usr/bin/python: not found\r\n", 
+    "msg": "MODULE FAILURE\nSee stdout/stderr for the exact error", 
+    "rc": 127
+}
+```
+Оказывается, в Ubuntu 18.04 python 2.7 по-умолчанию не установлен, но есть python3
+```
+appuser@instance-2:~$ python --version
+
+Command 'python' not found, but can be installed with:
+
+apt install python3       
+apt install python        
+apt install python-minimal
+
+Ask your administrator to install one of them.
+
+You also have python3 installed, you can run 'python3' instead.
+
+appuser@instance-2:~$ python3 --version
+Python 3.6.6
+```
+Чтобы не пересобирать образ я добавил в inventory-файл (и код скрипта) указание использовать python3 для образов reddit-db 
+```
+[db:vars]
+ansible_python_interpreter=/usr/bin/python3
+```
+
 Домашнее задание #7    Terraform-2
 ----------------------------------
 1. В конфигурации Terraform cоздано правило файрвола для SSH. 
