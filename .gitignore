@@ -7,3 +7,4 @@ packer/upload
 *.tfvars
 .terraform/
 *.pyc
+*.retry

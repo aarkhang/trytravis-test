@@ -14,7 +14,7 @@ resource "google_compute_instance" "app" {
     ssh-keys = "appuser:${file(var.public_key_path)}"
   }
 
-  tags = ["reddit-app"]
+  tags = ["tag-app${var.name_suffix}", "${var.env_name}"]
 
   # определение сетевого интерфейса
   network_interface {
@@ -26,12 +26,17 @@ resource "google_compute_instance" "app" {
       nat_ip = "${google_compute_address.app_ip.address}"
     }
   }
+}
+
+resource "null_resource" "app_deploy" {
+  count = "${var.enable_deploy ? 1 : 0}"
 
   connection {
     type        = "ssh"
     user        = "appuser"
     agent       = false
     private_key = "${file(var.private_key_path)}"
+    host        = "${google_compute_instance.app.network_interface.0.access_config.0.assigned_nat_ip}"
   }
 
   provisioner "file" {
@@ -60,7 +65,7 @@ resource "google_compute_firewall" "firewall_puma" {
   source_ranges = ["0.0.0.0/0"]
 
   # Правило применимо для инстансов с перечисленными тэгами
-  target_tags = ["reddit-app"]
+  target_tags = ["tag-app${var.name_suffix}"]
 }
 
 resource "google_compute_address" "app_ip" {

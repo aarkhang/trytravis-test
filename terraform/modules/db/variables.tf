@@ -21,3 +21,7 @@ variable public_key_path {
 variable private_key_path {
   description = "Path to the private key used for ssh access"
 }
+
+variable env_name {
+  description = "Name of environment (production, stage, develop...)"
+}

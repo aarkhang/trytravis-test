@@ -4,6 +4,107 @@ aarkhang_infra
 
 Otus DevOps 2018-09 Infrastructure repository.
 
+Домашнее задание #9    Ansible-2
+----------------------------------
+### Что сделано
+1. В модуле terraform добавлена логическая переменная и с её помощью отключён провижининг в Terraform.
+2. Проверена работа плейбука с одним и с несколькими сценариями, запуск хэндлеров.
+3. В плейбук добавлен сценарий для деплоя приложения.
+4. Основной плейбук разбит на 3 части: app.yml, db.yml, deploy.yml.
+5. Проверена работа такого плейбука со скриптом dyninventory.py, разработанным в ДЗ #8. При пересоздании окружения требуется вручную вносить изменения в сценарии app.yml и db.yml.
+6. Доработан скрипт dyninventory.py и сценарии app.yml и db.yml для исключения ручного редактирования при изменении окружения. При этом потеряна возможность параллельного запуска двух окружений.
+7. Провижининг с помощью shell-скриптов в Packer заменен на использование Ansible. 
+8. Пересозданы образы Packer, по очереди запущены оба окружения и проверена работа нового плейбука и доработанного скрипта dyninventory.py в каждом из них.
+9. В модули terraform добавлены теги с названиями окружений, доработан скрипт dyninventory.py  для извлечения этих тегов и плейбук для их использования. В результате восстановлена возможность параллельного запуска двух окружений.
+
+### Как запустить проект
+- Клонировать репозиторий
+- В директории packer скопировать файл variables.json.example в variables.json и заменить в нем project_id на реальный ID вашего проекта
+- Построить образы ВМ, запустив из корневой папки репозитория команды
+```sh
+ $ packer build --var-file packer/variables.json packer/app.json
+ $ packer build --var-file packer/variables.json packer/db.json
+```
+- Создать бакет в Google Cloud Storage и запустить параллельно окружения stage и prod, как описано в домашнем задании  #7
+- Перейти в каталог ansible и выполнить команду
+
+```sh
+$ ansible-playbook site.yml
+
+```
+
+Вывод команды будет выглядеть так
+
+```
+arh@zalman:/home/my/projects/otus/aarkhang_infra/ansible$ ansible-playbook site.yml
+
+PLAY [Configure MongoDB] ***********************************************************************************************************
+
+TASK [Change mongo config file] ****************************************************************************************************
+changed: [reddit-db-s]
+changed: [reddit-db]
+
+RUNNING HANDLER [restart mongod] ***************************************************************************************************
+changed: [reddit-db-s]
+changed: [reddit-db]
+
+PLAY [Configure application] *******************************************************************************************************
+
+TASK [Add unit file for Puma] ******************************************************************************************************
+changed: [reddit-app-s]
+changed: [reddit-app]
+
+TASK [Add config file for DB connection] *******************************************************************************************
+changed: [reddit-app-s]
+changed: [reddit-app]
+
+TASK [enable Puma] *****************************************************************************************************************
+changed: [reddit-app-s]
+changed: [reddit-app]
+
+RUNNING HANDLER [reload puma] ******************************************************************************************************
+changed: [reddit-app-s]
+changed: [reddit-app]
+
+PLAY [Deploy application] **********************************************************************************************************
+
+TASK [Fetch the latest version of application code] ********************************************************************************
+changed: [reddit-app-s]
+changed: [reddit-app]
+
+TASK [Bundle install] **************************************************************************************************************
+changed: [reddit-app]
+changed: [reddit-app-s]
+
+RUNNING HANDLER [restart puma] *****************************************************************************************************
+changed: [reddit-app-s]
+changed: [reddit-app]
+
+PLAY RECAP *************************************************************************************************************************
+reddit-app                 : ok=7    changed=7    unreachable=0    failed=0   
+reddit-app-s               : ok=7    changed=7    unreachable=0    failed=0   
+reddit-db                  : ok=2    changed=2    unreachable=0    failed=0   
+reddit-db-s                : ok=2    changed=2    unreachable=0    failed=0   
+
+```
+Мохно также выполнять плейбук только на одном из запущенных окружений:
+```sh
+$ ansible-playbook site.yml --limit stage
+
+```
+### Как проверить работоспособность приложения
+Определить внешние адреса запущенных инстансов, например выпонив команду: 
+```
+arh@zalman:/home/my/projects/otus/aarkhang_infra/ansible$ gcloud compute instances list
+NAME          ZONE             MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
+reddit-app-s  europe-north1-b  f1-micro                   10.166.0.3   35.228.9.114   RUNNING
+reddit-db-s   europe-north1-b  f1-micro                   10.166.0.2   35.228.241.58  RUNNING
+reddit-app    europe-west4-a   f1-micro                   10.164.0.3   35.204.35.210  RUNNING
+reddit-db     europe-west4-a   f1-micro                   10.164.0.2   35.204.30.1    RUNNING
+```
+Перейти по ссылкам http://<reddit-app-external_ip>:9292 и http://<reddit-app-s-external_ip>:9292
+
+
 Домашнее задание #8    Ansible-1
 ----------------------------------
 ### Что сделано

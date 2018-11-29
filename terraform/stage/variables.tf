@@ -39,3 +39,13 @@ variable name_suffix {
   description = "Suffix for resource names"
   default     = "-stage"
 }
+
+variable enable_deploy {
+  description = "Boolean flag for enable/disable application deploy"
+  default     = false
+}
+
+variable env_name {
+  description = "Name of environment"
+  default     = "stage"
+}
