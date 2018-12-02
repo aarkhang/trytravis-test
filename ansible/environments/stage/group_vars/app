@@ -1,5 +1,4 @@
-db_node: "{{ hostvars[inventory_hostname_short]['dbserver'] }}"
-db_host: "{{ hostvars[db_node]['internal_ip'] }}"
+db_host: "{{ hostvars['reddit-db-s']['networkInterfaces'][0]['networkIP'] }}"
 nginx_sites:
   default:
     - listen 80

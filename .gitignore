@@ -10,3 +10,7 @@ packer/upload
 *.retry
 jdauphant.nginx
 vault.key
+venv
+*.log
+.yamllint
+.vagrant
