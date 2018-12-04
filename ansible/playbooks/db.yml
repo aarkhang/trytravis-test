@@ -3,6 +3,6 @@
   hosts: db
   gather_facts: no
   become: true
-  
+
   roles:
     - db

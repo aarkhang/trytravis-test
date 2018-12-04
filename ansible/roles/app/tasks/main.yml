@@ -11,7 +11,7 @@
   notify: reload puma
 
 - name: Add config file for DB connection
-  template: 
+  template:
      src: db_config.j2
      dest: /home/appuser/db_config
      owner: appuser
