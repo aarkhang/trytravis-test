@@ -9,7 +9,6 @@ packer/upload
 .terraform/
 # Ansible
 *.retry
-jdauphant.nginx
 vault.key
 venv
 # Molecule
@@ -18,6 +17,8 @@ venv
 .molecule
 .cache
 .pytest_cache
-.yamllint
 # Vagrant
 .vagrant
+# External roles
+ansible/roles/db
+ansible/roles/jdauphant.nginx
