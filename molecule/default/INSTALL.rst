@@ -1,16 +1,16 @@
 *******
-Docker driver installation guide
+GCE driver installation guide
 *******
 
 Requirements
 ============
 
-* General molecule dependencies (see https://molecule.readthedocs.io/en/latest/installation.html)
-* Docker Engine
-* docker-py
-* docker
+* A GCE credentials rc file
+* apache-libcloud
 
 Install
 =======
 
-    $ sudo pip install docker-py
+.. code-block:: bash
+
+  $ sudo pip install apache-libcloud

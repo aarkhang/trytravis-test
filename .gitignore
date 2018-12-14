@@ -5,3 +5,8 @@
 .molecule
 .pytest_cache
 .vagrant
+*.tar
+*.pub
+*.bak
+credentials.json
+gce_rsa_key

@@ -1,25 +1,25 @@
----
 language: python
-services: docker
-
 env:
   global:
-    - ROLE_NAME: db
+  - ROLE_NAME: db
+  - GCE_CREDENTIALS_FILE="~/.ssh/credentials.json"
+  - secure: mBfb+aDyzuTGYWHEvPoADqPV33rizu8UZ0fiTQsiwkXQ5eIGA6I/edT5Hwq56uBqfKrYtlCuOf+lfE5ggrvDZr+nUcPMoCWLTMWaT3jQmt08F6DzA9vmBhe2W9697/R601nYI/s74EG6yM5lPg16iuxQDm2CkI4eSSBEY8gqaeCvDeBrZLimfoxzlhxgIBvlJE5v6hUtOU8CXoIOVMKYUvVltP62TSRqgIVizy9hzfZjFdT26Nes7tU4qXjiu+htnnGmU41tQHcADAxGvfRmZ/7EPp1bZ3ee+4fWkf4HG8x8jl72EYI0hSuItFINTEVjl+oShTOSG5KHL8KCMXiuVa5Og0YIZQbxdRRLUyoL5vw69dWbd8/lEELQ6ahyqnlyZLw635eRFi5gZSrd2BFhpFfWCzqbSTYk1f5PFS3meJT8WO+TLAJOT8vCgWNMQVLEzjQKw6x+BGTaZEGX5dKeGUPduRXguFjgXkmGTyX2Qw4DcceMd0CP2um9KDC+SElXoE4SafkIY/9iqEj5kHtvsn7DrGJlFe77qVideoOPpeb/X1NpQLzRxoGqWwE/NXue0cEC+f8fDajWwlb3KfFO7wYRq1+JaMAlrJPIr2X03WQQfC55GqHKtY8UsaG3FamdkNo79Wds8ndDm0TQBFzPHdv0DoNmFN4M95lmiHQSwNU=
+  - secure: kJ35aJhPB+T0hyaXrC8bHmxtdBv9vXKgRr2TtH3VMYpyYYS6fly6A+OJm5HV+yV0OsKdmgqQ1zsUI1CVgLjyg+PmQUqBVzeQFSrZrPALShYbfeRXaFYD8Z3bJ7xYFE/D30Wn4/EKepHKB/hDYyXy6zx9XooyYD5HEmtL5SmI0KCkyEzb6K6NN3Lk4GCxB4htlq7Hpy1DoK/i8jC0OzoClNW/twkAQx6GV8m4V0RsWfqpvmd274CYCyb8ju9DLJ9v8srNhybv8tdOtJVE9uSNbI+sDpXpImhxMdsZXl/3s0RIGkgZcjrTkAAna0zNHgjKwDMgPyNCt47RYhIw4X7F5R0eJOBSFI6zpdM0ME9kIo3BPcBTSyuJWA+vF9jO+pqc0+GVqi+EGl0xQ3T3aq5dg8VOIIoDF1h/a6bPAkm7c1wR4zQmmpHCkyVw6EUBV/+0QgSS5TiCg5Rci4zVCB1XDaFaqF1qSJG8yBDfYSMasiZw6kdJeImThJa0EW5Ns/iR+vWX0jgPNtz6KpCssgi9wATNRbDFklTpa8TFbEwlfWMfQHqyNfhlDOh5kzNFXKFRyPPPDixRZdvJj8S8EfpP+bWh374G/759qACyekHjhPruGqPquSY+rX5mfiJFFGk6D73cvFgq80/OS+Mu5PLKV643rhfTuo5nBJ9o3maECL0=
+  - secure: IAqvq9/tSfzMWafWxLEryuGqNEIdn/9S28YObpC4JVePQAB5qJaXoXax5Oniplk6J2+o2Gu4byoAtfZuHETzm/hRCz1YBUhEja4n36gdEtbxWduIYhwVN0n6Z4Uc9audSYOxLvPlu3zlAyycaWe7mBQJPWLncKUEiT/0quOLBiw5dbFh3ylid2FKR3yK2nIzUtZwBX9YN8okJIRh/O99hrCUe7fJruKmFfc5rmlouQoz57zXYatnZRMvHebBAZ3JWrC/S9JIB0AityPRHGcET3HmH/ooAh9BKqQXj5j1PNbQdwXfQwG6mr3G9KkXNe237lzdC5czMITUXQ5QtZ7evGzCWu1RmiHLtp3qxBBNXYVb77e/xR5PrrvBZcmMATVnFneENoetB2Z5rtSSTTRgYLHF7c0XIiTMW/PYg3xrwR59AOEiAEfDU62mLpTonDwHsh6/BDBuXVwCrUcjurt/nP0fOE+vElHm+gUPr62uYsObhi4yAq5hYQlBRjO3kQP5fgvZNuyqTWKblNhmNBerEj0kMb+sa191q1T2D7ozHlG9Kz8KWl2268xOTwzz6ZWtnAbOsvj7ebKqec0yVO+PmF6/0gnm16Pjw/C12/UwF+L+yRH9pGFaooFpJsHoJWoZBgFVQl1i1jWFKutGPTxUH31CW0pbMfAqLbhZzfGwS4k=
   matrix:
-    - MOLECULE_DISTRO: ubuntu1604
-
+  - MOLECULE_DISTRO: ubuntu1604
+before_install:
+- echo \-K $encrypted_059a9cadc520_key \-iv $encrypted_059a9cadc520_iv
+- openssl aes-256-cbc -K $encrypted_059a9cadc520_key -iv $encrypted_059a9cadc520_iv
+  -in secrets.tar.enc -out secrets.tar -d
+- tar xvf secrets.tar -C ~/.ssh
+- chmod 0600 ~/.ssh/gce_rsa_key
 install:
-  # Install test dependencies.
-  - pip install molecule docker
-
+- pip install molecule apache-libcloud
 before_script:
-  # Use actual role name for the project directory.
-  - ./tests/rename_role_dir.sh
-
+- "./tests/rename_role_dir.sh"
 script:
-  # Run tests.
-  - molecule test
-
+- molecule test
 notifications:
   slack:
     rooms:
