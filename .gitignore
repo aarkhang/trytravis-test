@@ -5,4 +5,3 @@
 .molecule
 .pytest_cache
 .vagrant
-.yamllint
