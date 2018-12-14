@@ -1,0 +1,26 @@
+---
+language: python
+services: docker
+
+env:
+  global:
+    - ROLE_NAME: db
+  matrix:
+    - MOLECULE_DISTRO: ubuntu1604
+
+install:
+  # Install test dependencies.
+  - pip install molecule docker
+
+before_script:
+  # Use actual role name for the project directory.
+  - ./tests/rename_role_dir.sh
+
+script:
+  # Run tests.
+  - molecule test
+
+notifications:
+  slack:
+    rooms:
+      secure: h+UjzDNvyCeck7sW6+wBGUgCz5SPBQTFhMtNDFJMoxQnPqxZ6k5NFhjHa50IBFsoydZWU8qyF/AvypNcSfkGX4yA5K+KePY5htq4iR3Q5/bTtQF6VcnTa1S6ufDweBUVkzuUu9Mq47hYWjsoEtRmwkrv7XGQYUIdAyo3u2twq6D8WUry9sGNOndicxfwq+QxJr4OXsNij2eBgzSx1phRwUgH4iTpVvcxHwzdePNP0PrhlB4FP1dG+OrtzYsWDYZK1/aRkk9wdsW+6wqmQ2NHrlq8Cg9FuHtW99iabdm2wwDlP0cuXORYgJBbpOPx4pNMdxwo9mpXt5TYnvFCuWqqB+xxiUc1ZdZeMizX4Jkbgwqfiz8VHGmvwyqQTPjkX1tpIqf6k1GWh84dGS2gNsfFSTg88Qq7U6S/5q1NEf8gCVBNeAHyo1GL28g0YP6K+j2TKBwx186jC+3eo2fVGhWnTcnk2hFGTjDP0rw8YLFVPvN0oSjU3NqFA9tqFsSz7XkFhQ9TWNIPIZn5STl44ijNYLk3yvz8/ZbLpDLH8yMBBtQO/pMVOdiLXnp6zdEx3WFfyEiU+sMq2NvmPM9JWnKdmO7lVT+xnFXwRko6alq1q6oqq47WRwUlq9pefKJ3n1jeXn7rQHWKL2nujmbffKpLFzEGYRkQrazFtwFOJ6PMakY=
